@@ -86,7 +86,14 @@ public class BrokerStartup {
         final NettyServerConfig nettyServerConfig = new NettyServerConfig();
         final NettyClientConfig nettyClientConfig = new NettyClientConfig();
         final MessageStoreConfig messageStoreConfig = new MessageStoreConfig();
-        nettyServerConfig.setListenPort(10911);
+        String storePathRootDir = System.getProperty(MixAll.STORE_PATH_ROOT_DIR,
+                System.getenv(MixAll.STORE_PATH_ROOT_DIR));
+        if (storePathRootDir != null) {
+            messageStoreConfig.setStorePathRootDir(storePathRootDir);
+        }
+        String listenPort = System.getProperty(MixAll.LISTEN_PORT,
+                System.getenv(MixAll.LISTEN_PORT));
+        nettyServerConfig.setListenPort(listenPort == null ? 10911 : Integer.parseInt(listenPort));
         messageStoreConfig.setHaListenPort(0);
 
         Options options = ServerUtil.buildCommandlineOptions(new Options());

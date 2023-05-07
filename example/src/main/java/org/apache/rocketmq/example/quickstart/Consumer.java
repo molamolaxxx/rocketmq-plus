@@ -74,7 +74,8 @@ public class Consumer {
             System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msg);
             for (MessageExt messageExt : msg) {
                 String body = new String(messageExt.getBody(), StandardCharsets.UTF_8);
-                System.out.printf("Body: %s", body);
+                System.out.printf("Body: %s \n", body);
+                System.out.println();
             }
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         });

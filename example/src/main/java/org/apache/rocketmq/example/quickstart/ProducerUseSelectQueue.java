@@ -46,7 +46,7 @@ public class ProducerUseSelectQueue {
                         int index = id % mqs.size();
                         return mqs.get(index);
                     }
-                }, i % 4);
+                }, i);
 
                 System.out.printf("%s%n", sendResult);
             } catch (Exception e) {

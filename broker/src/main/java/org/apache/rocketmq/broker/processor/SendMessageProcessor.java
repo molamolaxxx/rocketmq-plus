@@ -226,6 +226,18 @@ public class SendMessageProcessor extends AbstractSendMessageProcessor implement
         return true;
     }
 
+    /**
+     * broker端接受消息
+     * 1、消息落盘
+     * @param ctx
+     * @param request
+     * @param sendMessageContext
+     * @param requestHeader
+     * @param mappingContext
+     * @param sendMessageCallback
+     * @return
+     * @throws RemotingCommandException
+     */
     public RemotingCommand sendMessage(final ChannelHandlerContext ctx,
         final RemotingCommand request,
         final SendMessageContext sendMessageContext,
@@ -305,7 +317,7 @@ public class SendMessageProcessor extends AbstractSendMessageProcessor implement
 
         long beginTimeMillis = this.brokerController.getMessageStore().now();
 
-        if (brokerController.getBrokerConfig().isAsyncSendEnable()) {
+        if (brokerController.getBrokerConfig().isAsyncSendEnable()) { // 异步刷盘
             CompletableFuture<PutMessageResult> asyncPutMessageFuture;
             if (sendTransactionPrepareMessage) {
                 asyncPutMessageFuture = this.brokerController.getTransactionalMessageService().asyncPrepareMessage(msgInner);
@@ -326,7 +338,7 @@ public class SendMessageProcessor extends AbstractSendMessageProcessor implement
             }, this.brokerController.getPutMessageFutureExecutor());
             // Returns null to release the send message thread
             return null;
-        } else {
+        } else { // 同步刷盘
             PutMessageResult putMessageResult = null;
             if (sendTransactionPrepareMessage) {
                 putMessageResult = this.brokerController.getTransactionalMessageService().prepareMessage(msgInner);

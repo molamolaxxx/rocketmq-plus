@@ -749,6 +749,12 @@ public class CommitLog implements Swappable {
         }
     }
 
+    /**
+     * commitLog异步刷盘
+     * 1、
+     * @param msg
+     * @return
+     */
     public CompletableFuture<PutMessageResult> asyncPutMessage(final MessageExtBrokerInner msg) {
         // Set the storage time
         if (!defaultMessageStore.getMessageStoreConfig().isDuplicationEnable()) {
@@ -853,7 +859,7 @@ public class CommitLog implements Swappable {
                     beginTimeInLock = 0;
                     return CompletableFuture.completedFuture(new PutMessageResult(PutMessageStatus.CREATE_MAPPED_FILE_FAILED, null));
                 }
-
+                // 写commitLog
                 result = mappedFile.appendMessage(msg, this.appendMessageCallback, putMessageContext);
                 switch (result.getStatus()) {
                     case PUT_OK:

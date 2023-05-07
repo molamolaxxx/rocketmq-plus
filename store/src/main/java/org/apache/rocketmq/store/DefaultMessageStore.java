@@ -2753,6 +2753,11 @@ public class DefaultMessageStore implements MessageStore {
             return this.reputFromOffset < DefaultMessageStore.this.getConfirmOffset();
         }
 
+        /**
+         * 异步分派commitLog的消息，存储到队列
+         * 单线程判断commitLog里是否有未消费的消息
+         * 如果有，取出存储到consumerqueue
+         */
         public void doReput() {
             if (this.reputFromOffset < DefaultMessageStore.this.commitLog.getMinOffset()) {
                 LOGGER.warn("The reputFromOffset={} is smaller than minPyOffset={}, this usually indicate that the dispatch behind too much and the commitlog has expired.",
@@ -2782,6 +2787,7 @@ public class DefaultMessageStore implements MessageStore {
 
                         if (dispatchRequest.isSuccess()) {
                             if (size > 0) {
+                                // 分派到consumerqueue
                                 DefaultMessageStore.this.doDispatch(dispatchRequest);
 
                                 if (DefaultMessageStore.this.brokerConfig.isLongPollingEnable()
@@ -2790,6 +2796,7 @@ public class DefaultMessageStore implements MessageStore {
                                         dispatchRequest.getQueueId(), dispatchRequest.getConsumeQueueOffset() + 1,
                                         dispatchRequest.getTagsCode(), dispatchRequest.getStoreTimestamp(),
                                         dispatchRequest.getBitMap(), dispatchRequest.getPropertiesMap());
+                                    // 通知consumer
                                     notifyMessageArrive4MultiQueue(dispatchRequest);
                                 }
 

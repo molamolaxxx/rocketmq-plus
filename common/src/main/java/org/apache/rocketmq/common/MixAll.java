@@ -54,6 +54,8 @@ import org.apache.rocketmq.logging.org.slf4j.LoggerFactory;
 
 public class MixAll {
     public static final String ROCKETMQ_HOME_ENV = "ROCKETMQ_HOME";
+    public static final String LISTEN_PORT = "LISTEN_PORT";
+    public static final String STORE_PATH_ROOT_DIR = "STORE_PATH_ROOT_DIR";
     public static final String ROCKETMQ_HOME_PROPERTY = "rocketmq.home.dir";
     public static final String NAMESRV_ADDR_ENV = "NAMESRV_ADDR";
     public static final String NAMESRV_ADDR_PROPERTY = "rocketmq.namesrv.addr";
